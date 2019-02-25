@@ -106,8 +106,6 @@ public class Main extends JPanel implements KeyListener {
     }
 
     private Main(int width, int height) {
-        assert(width > 0 && height > 0);
-
         this.setSize(width, height);
 
         frame = new JFrame("Render test");

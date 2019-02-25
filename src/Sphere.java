@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -39,8 +38,7 @@ public class Sphere {
 
         Vec3 CO = ray.getOrigin().sub(this.pos);
         float base = (ray.getDirection().dot(CO));
-        float disc = base*base - CO.dot(CO) + radius*radius;
-        disc = (float) Math.sqrt(disc);
+        float disc = (float) Math.sqrt(base*base - CO.dot(CO) + radius*radius);
 
         ret[0] = -base - disc;
         ret[1] = -base + disc;
@@ -64,18 +62,16 @@ public class Sphere {
     }
 
     public Color colorHit(Ray ray, ArrayList<Sphere> spheres, int n_reflections, float t) {
-        if (!hit(ray) || Float.isNaN(t)) return Color.black;
+        if (!hit(ray) || Float.isNaN(t)) return Color.black; 
 
-        int red = color.getRed();
-        int green = color.getGreen();
-        int blue = color.getBlue();
+        if(t > 8)
+            return new Color(
+                (int) (color.getRed()   * 8 / t),
+                (int) (color.getGreen() * 8 / t),
+                (int) (color.getBlue()  * 8 / t)
+            );
 
-        red = Math.min(red, (int)(8*red / t));
-        green = Math.min(green, (int)(8*green / t));
-        blue = Math.min(blue, (int)(8*blue / t));
-
-        //return color;
-        return new Color(red, green, blue);
+        return color;
     }
 
     public float getRadius() { return radius; }

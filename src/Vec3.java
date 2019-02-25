@@ -21,8 +21,8 @@ public class Vec3 {
         return new Vec3(x * scalar, y * scalar, z * scalar);
     }
 
-    public Vec3 add(Vec3 vec, Vec3 ... vecs) {
-        float X = x + vec.x, Y = y + vec.y, Z = z + vec.z;
+    public Vec3 add(Vec3... vecs) {
+        float X = x, Y = y, Z = z;
         for (Vec3 v : vecs) {
             X += v.x;
             Y += v.y;
@@ -53,8 +53,8 @@ public class Vec3 {
         return new Vec3(X, Y, z);
     }
 
-    public Vec3 sub(Vec3 vec, Vec3 ... vecs) {
-        float X = x - vec.x, Y = y - vec.y, Z = z - vec.z;
+    public Vec3 sub(Vec3 ... vecs) {
+        float X = x, Y = y, Z = z;
         for (Vec3 v : vecs) {
             X -= v.x;
             Y -= v.y;
@@ -87,7 +87,7 @@ public class Vec3 {
     public boolean isZero() { return x == 0 && y == 0 && z == 0; }
 
     public float mag() {
-        return (float)(Math.sqrt(x * x + y * y + z * z));
+        return (float) (Math.sqrt(x * x + y * y + z * z));
     }
 
     public Vec3 cross(Vec3 vec) {
@@ -100,13 +100,5 @@ public class Vec3 {
 
     public String toString() {
         return String.format("Vec3(%.2f, %.2f, %.2f)", x, y, z);
-    }
-
-    public boolean equals(Object obj) {
-        if (obj instanceof Vec3) {
-            Vec3 v = (Vec3)obj;
-            return v.x == x && v.y == y && v.z == z;
-        }
-        return false;
     }
 }

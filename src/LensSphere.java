@@ -20,6 +20,8 @@ public class LensSphere extends Sphere {
         refract = refract.refract(rhat, t2, 1.1f, 1f);
 
         float min_dist = Float.MAX_VALUE;
+        int min_index = -1;
+        int index = 0;
         Color c = Color.black;
 
         for (Sphere sphere : spheres) {
@@ -28,18 +30,19 @@ public class LensSphere extends Sphere {
             float dist = sphere.touch(refract);
             if (!Float.isNaN(dist) && dist < min_dist) {
                 min_dist = dist;
-                c = sphere.colorHit(refract, spheres, n_reflections-1, dist);
+                min_index = index;
             }
+            index++;
         }
+        if(min_index != -1) c = spheres.get(min_index).colorHit(refract, spheres, n_reflections-1, min_dist);
 
-        int r = c.getRed();
-        int g = c.getGreen();
-        int b = c.getBlue();
+        if(t1+t2 > 8)
+            return new Color(
+                (int) (c.getRed()   * 8 / (t1+t2)),
+                (int) (c.getGreen() * 8 / (t1+t2)),
+                (int) (c.getBlue()  * 8 / (t1+t2))
+            );
 
-        r = Math.min(r, (int)(8 * r / (t1+t2)));
-        g = Math.min(g, (int)(8 * g / (t1+t2)));
-        b = Math.min(b, (int)(8 * b / (t1+t2)));
-
-        return new Color(r, g, b);
+        return c;
     }
 }

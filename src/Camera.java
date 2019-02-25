@@ -86,41 +86,20 @@ public class Camera {
                 Ray ray = new Ray(position, D);
 
                 float min_dist = Float.MAX_VALUE;
-                Sphere min = null;
+                int min_index = -1;
+                int index = 0;
                 Color color = Color.black;
 
                 for (Sphere renderable : renderables) {
                     float dist = renderable.touch(ray);
                     if (!Float.isNaN(dist) && dist < min_dist) {
                         min_dist = dist;
-                        min = renderable;
+                        min_index = index;
                     }
+                    index++;
                 }
-                if(min != null) color = min.colorHit(ray, renderables, 3, min_dist);
+                if(min_index != -1) color = renderables.get(min_index).colorHit(ray, renderables, 3, min_dist);
                 image.setRGB(x, y, color.getRGB());
-            }
-        }
-    }
-
-    public void render_projection(ArrayList<Sphere> renderables) {
-        float pixel_len = 2f / width;
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                float UPscale = (y - height / 2) * pixel_len;
-                float RIGHTscale = (x - width / 2) * pixel_len;
-                Vec3 P = position.add(
-                        UP.scale(UPscale),
-                        RIGHT.scale(RIGHTscale)
-                );
-                Vec3 D = direction;
-                Ray ray  = new Ray(P, D);
-                for (Sphere renderable : renderables) {
-                   if (renderable.hit(ray)) {
-                       image.setRGB(x, y, renderable.getColor().getRGB());
-                   } else {
-                       image.setRGB(x, y, Color.black.getRGB());
-                   }
-                }
             }
         }
     }
