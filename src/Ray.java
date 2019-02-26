@@ -21,11 +21,10 @@ public class Ray {
         return new Ray(point(t), D);
     }
 
-    public Ray refract(Vec3 norm, float t, float N1, float N2) {
-        Vec3 O = point(t);
+    public Ray refract(Vec3 norm, Vec3 point_t, float N1, float N2) {
         Vec3 r = direction.proj(norm).sub(direction);
         Vec3 D = direction.add(r.scale(1 - N1 / N2)).unit();
-        return new Ray(O,D);
+        return new Ray(point_t, D);
     }
 
     public String toString() {

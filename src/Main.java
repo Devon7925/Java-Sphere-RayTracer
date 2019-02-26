@@ -9,7 +9,7 @@ public class Main extends JPanel implements KeyListener {
     private static final long serialVersionUID = 1L;
     private JFrame frame;
     private Camera camera;
-    private ArrayList<Sphere> renderables;
+    private ArrayList<Sphere> spheres;
 
     private boolean move_front = false;
     private boolean move_left = false;
@@ -76,6 +76,7 @@ public class Main extends JPanel implements KeyListener {
         }
     }
 
+    long time = 0;
 
     @Override
     public void paint(Graphics graphics) {
@@ -95,14 +96,16 @@ public class Main extends JPanel implements KeyListener {
         if (look_count) camera.roll(rot_velocity);
         if (look_clock) camera.roll(-rot_velocity);
 
-        camera.render_perspective(renderables);
+        camera.render_perspective(spheres);
         graphics.drawImage(camera.getImage(), 0, 0, null);
         repaint();
 
-        Sphere s1 = (Sphere) renderables.get(0);
-        Sphere s2 = (Sphere) renderables.get(1);
+        Sphere s1 = (Sphere) spheres.get(0);
+        Sphere s2 = (Sphere) spheres.get(1);
         s1.setPos(s1.getPos().rotateZ(rot_velocity));
         s2.setPos(s2.getPos().rotateZ(rot_velocity));
+        System.out.println("FPS: "+1000.0/(System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
     }
 
     private Main(int width, int height) {
@@ -124,10 +127,13 @@ public class Main extends JPanel implements KeyListener {
         Sphere s1 = new Sphere(1f, Color.GREEN, new Vec3(0f, -2.1f,2f));
         Sphere s2 = new Sphere(1f, Color.BLUE, new Vec3(0f, 2.1f,2f));
         Sphere s3 = new Sphere(19f, Color.GRAY, new Vec3(0f, 0f, -20f));
-        MirrorSphere ms1 = new MirrorSphere(1f, new Vec3(0f, 0f, 2f));
-        LensSphere ms3 = new LensSphere(1.2f, new Vec3(-7f, 0f, 2f));
+        Sphere ms1 = new Sphere(1f, Color.MAGENTA, new Vec3(0f, 0f, 2f));
+        ms1.addComponent(new Reflect(0.8f));
+        ms1.addComponent(new Refract(0.1f));
+        Sphere ms3 = new Sphere(0.8f, Color.CYAN, new Vec3(-2f, 0f, 0f));
+        ms3.addComponent(new Refract(0.85f));
 
-        renderables = new ArrayList<>(Arrays.asList(s1, s2, s3, ms1, ms3));
+        spheres = new ArrayList<>(Arrays.asList(s1, s2, ms1, s3, ms3));
 
         camera = new Camera(
                 width, height,
