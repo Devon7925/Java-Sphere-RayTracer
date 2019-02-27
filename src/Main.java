@@ -80,6 +80,26 @@ public class Main extends JPanel implements KeyListener {
 
     @Override
     public void paint(Graphics graphics) {
+        move();
+
+        camera.render_perspective(spheres, graphics);
+
+        physics();
+
+        System.out.println("FPS: "+1000.0/(System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
+
+        repaint();
+    }
+
+    private void physics() {
+        Sphere s1 = (Sphere) spheres.get(0);
+        Sphere s2 = (Sphere) spheres.get(1);
+        s1.setPos(s1.getPos().rotateZ(rot_velocity));
+        s2.setPos(s2.getPos().rotateZ(rot_velocity));
+    }
+
+    private void move() {
         // camera movement
         if (move_front) camera.move_forward(move_velocity);
         if (move_back)  camera.move_forward(-move_velocity);
@@ -95,17 +115,6 @@ public class Main extends JPanel implements KeyListener {
         if (look_up)    camera.pitch(-rot_velocity);
         if (look_count) camera.roll(rot_velocity);
         if (look_clock) camera.roll(-rot_velocity);
-
-        camera.render_perspective(spheres);
-        graphics.drawImage(camera.getImage(), 0, 0, null);
-        repaint();
-
-        Sphere s1 = (Sphere) spheres.get(0);
-        Sphere s2 = (Sphere) spheres.get(1);
-        s1.setPos(s1.getPos().rotateZ(rot_velocity));
-        s2.setPos(s2.getPos().rotateZ(rot_velocity));
-        System.out.println("FPS: "+1000.0/(System.currentTimeMillis()-time));
-        time = System.currentTimeMillis();
     }
 
     private Main(int width, int height) {
@@ -117,7 +126,6 @@ public class Main extends JPanel implements KeyListener {
         frame.addKeyListener(this);
         frame.setSize(width+2, height + 24);
         frame.setResizable(false);
-        frame.setVisible(true);
         this.addKeyListener(this);
 
         Vec3 camera_pos = new Vec3(0, 0, 2);
@@ -127,13 +135,13 @@ public class Main extends JPanel implements KeyListener {
         Sphere s1 = new Sphere(1f, Color.GREEN, new Vec3(0f, -2.1f,2f));
         Sphere s2 = new Sphere(1f, Color.BLUE, new Vec3(0f, 2.1f,2f));
         Sphere s3 = new Sphere(19f, Color.GRAY, new Vec3(0f, 0f, -20f));
+        s3.addComponent(new Reflect(0.5f));
         Sphere ms1 = new Sphere(1f, Color.MAGENTA, new Vec3(0f, 0f, 2f));
-        ms1.addComponent(new Reflect(0.8f));
-        ms1.addComponent(new Refract(0.1f));
+        ms1.addComponent(new Reflect(0.9f));
         Sphere ms3 = new Sphere(0.8f, Color.CYAN, new Vec3(-2f, 0f, 0f));
         ms3.addComponent(new Refract(0.85f));
 
-        spheres = new ArrayList<>(Arrays.asList(s1, s2, ms1, s3, ms3));
+        spheres = new ArrayList<>(Arrays.asList(s1, s2, s3, ms1, ms3));
 
         camera = new Camera(
                 width, height,
@@ -141,6 +149,8 @@ public class Main extends JPanel implements KeyListener {
                 camera_dir,
                 camera_up
         );
+        
+        frame.setVisible(true);
     }
 
 

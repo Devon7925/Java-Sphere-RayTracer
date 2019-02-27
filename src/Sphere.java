@@ -41,6 +41,12 @@ public class Sphere {
 
         Vec3 OP = pos.sub(ray.getOrigin()); // vector pointing from ray origin to sphere position
         float dotprod = OP.dot(ray.getDirection());
+        return hit(ray, OP, dotprod);
+    }
+
+    public boolean hit(Ray ray, Vec3 OP, float dotprod) {
+        // uncomment if you allow hits from inside the sphere
+        // if (ray.getOrigin().sub(pos).mag() <= radius) return true;
         if (dotprod <= 0) return false;
 
         Vec3 proj = ray.getDirection().scale(dotprod);
@@ -50,26 +56,36 @@ public class Sphere {
     }
 
     public float[] intersect(Ray ray) {
+        Vec3 OP = pos.sub(ray.getOrigin());
+        return intersect(ray, OP, OP.dot(ray.getDirection()));
+    }
+
+    private float[] intersect(Ray ray, Vec3 OP, float base) {
         float[] ret = new float[2];
+        float intersectRadii = (float) Math.sqrt(base*base - OP.dot(OP) + radius*radius);
 
-        Vec3 CO = ray.getOrigin().sub(this.pos);
-        float base = (ray.getDirection().dot(CO));
-        float disc = (float) Math.sqrt(base*base - CO.dot(CO) + radius*radius);
-
-        ret[0] = -base - disc;
-        ret[1] = -base + disc;
+        ret[0] = base - intersectRadii;
+        ret[1] = base + intersectRadii;
 
         return ret;
     }
 
     public float touch(Ray ray) {
-        if (ray.getOrigin().sub(getPos()).mag() <= radius) return Float.NaN;
+        // if (ray.getOrigin().sub(getPos()).mag() <= radius) return Float.NaN;
         float[] T = intersect(ray);
         if (Float.isNaN(T[0])) return Float.NaN;
         if (T[0] > 0) return T[0];
         if (T[1] > 0) return T[1];
         return Float.NaN;
     }
+
+	public float touch(Ray ray, Vec3 OP, float dotprod) {
+        float[] T = intersect(ray, OP, dotprod);
+        if (Float.isNaN(T[0])) return Float.NaN;
+        if (T[0] > 0) return T[0];
+        if (T[1] > 0) return T[1];
+        return Float.NaN;
+	}
 
     public Vec3 rhat(Vec3 point) {
         return point.sub(pos).unit();
