@@ -27,6 +27,12 @@ public class Sphere {
             g += comp.percent*c.getGreen();
             b += comp.percent*c.getBlue();
         }
+
+        if(t > 8){
+            r *= 8 / t;
+            g *= 8 / t;
+            b *= 8 / t;
+        }
         return new Color((int) r, (int) g, (int) b);
     }
 

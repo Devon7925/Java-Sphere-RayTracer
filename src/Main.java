@@ -1,9 +1,12 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class Main extends JPanel implements KeyListener {
     private static final long serialVersionUID = 1L;
@@ -27,6 +30,9 @@ public class Main extends JPanel implements KeyListener {
 
     private float move_velocity = 0.2f;
     private float rot_velocity = 0.1f;
+
+    double accumfps = 0;
+    double numfps = 0;
 
     @Override
     public void keyTyped(KeyEvent keyEvent) {}
@@ -72,6 +78,7 @@ public class Main extends JPanel implements KeyListener {
             case KeyEvent.VK_C:     look_clock = false; break;
             
             case KeyEvent.VK_P: camera.space_default(); break;
+            case KeyEvent.VK_R: accumfps=0;numfps=0;    break;
             case KeyEvent.VK_ESCAPE: System.exit(0);    break;
         }
     }
@@ -86,7 +93,9 @@ public class Main extends JPanel implements KeyListener {
 
         physics();
 
-        System.out.println("FPS: "+1000.0/(System.currentTimeMillis()-time));
+        accumfps += 1000.0/(System.currentTimeMillis()-time);
+        numfps++;
+        System.out.println("FPS: "+ accumfps/numfps);
         time = System.currentTimeMillis();
 
         repaint();
@@ -128,7 +137,7 @@ public class Main extends JPanel implements KeyListener {
         frame.setResizable(false);
         this.addKeyListener(this);
 
-        Vec3 camera_pos = new Vec3(0, 0, 2);
+        Vec3 camera_pos = new Vec3(-7, -1.5f, 4);
         Vec3 camera_dir = new Vec3(1f,0f,0f).unit();
         Vec3 camera_up  = new Vec3(0f,0f,1f);
 
@@ -149,6 +158,8 @@ public class Main extends JPanel implements KeyListener {
                 camera_dir,
                 camera_up
         );
+
+        camera.pitch(0.5f);
         
         frame.setVisible(true);
     }

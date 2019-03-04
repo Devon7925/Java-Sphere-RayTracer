@@ -12,15 +12,6 @@ class ColorReflect extends RenderComponent {
 
     @Override
     public Color colorHit(Sphere root, Ray ray, ArrayList<Sphere> spheres, int n_reflections, float t) {
-        if (Float.isNaN(t)) return Color.black; 
-
-        if(t > 8)
-            return new Color(
-                (int) (color.getRed()   * 8 / t),
-                (int) (color.getGreen() * 8 / t),
-                (int) (color.getBlue()  * 8 / t)
-            );
-
         return color;
     }
 

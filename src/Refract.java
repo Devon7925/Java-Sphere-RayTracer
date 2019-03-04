@@ -23,32 +23,26 @@ class Refract extends RenderComponent {
 
         float min_dist = Float.MAX_VALUE;
         int min_index = -1;
-        Color c = Color.black;
 
         for (int i = 0; i < spheres.size(); i++) {
             if (spheres.get(i) == root) continue;
             
             Vec3 OP = spheres.get(i).getPos().sub(refract.getOrigin());
             if(OP.mag()-spheres.get(i).radius < min_dist){
-            float dotprod = OP.dot(refract.getDirection());
+                float dotprod = OP.dot(refract.getDirection());
 
-            if(spheres.get(i).hit(refract, OP, dotprod)){
-                float dist = spheres.get(i).touch(refract, OP, dotprod);
-                if (!Float.isNaN(dist) && dist < min_dist) {
-                    min_dist = dist;
-                    min_index = i;
+                if(spheres.get(i).hit(refract, OP, dotprod)){
+                    float dist = spheres.get(i).touch(refract, OP, dotprod);
+                    if (!Float.isNaN(dist) && dist < min_dist) {
+                        min_dist = dist;
+                        min_index = i;
+                    }
                 }
-            }}
+            }
         }
-        if(min_index != -1) c = spheres.get(min_index).colorHit(refract, spheres, n_reflections-1, min_dist);
 
-        float t = t1 + t2;
-        if(t > 8)
-            return new Color(
-                (int) (c.getRed()   * 8 / t),
-                (int) (c.getGreen() * 8 / t),
-                (int) (c.getBlue()  * 8 / t)
-            );
+        Color c = Color.black;
+        if(min_index != -1) c = spheres.get(min_index).colorHit(refract, spheres, n_reflections-1, min_dist);
 
         return c;
     }

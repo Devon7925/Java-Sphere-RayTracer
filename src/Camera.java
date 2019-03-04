@@ -3,10 +3,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Camera {
     private BufferedImage image;
-    private BufferedImage optImage;
+    private short[][] optImage;
     private Vec3 position;
     private Vec3 direction;
     private Vec3 UP;
@@ -55,7 +56,7 @@ public class Camera {
 
     public Camera(int width, int height, Vec3 position, Vec3 direction, Vec3 UP) {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        optImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        optImage = new short[width/optdiff + 1][height/optdiff + 1];
         this.width = width;
         this.height = height;
         FOV = 60;
@@ -70,15 +71,16 @@ public class Camera {
         this.RIGHT = direction.cross(UP).unit();
     }
 
-    public void render_perspective(ArrayList<Sphere> spheres, Graphics graphics) {
+    final int optdiff = 10;
 
+    public void render_perspective(ArrayList<Sphere> spheres, Graphics graphics) {
         float canvas_distance = (float) (1.0 / Math.tan( Math.toRadians(FOV) / 2 ));
         Vec3 canvas_center = position.add(direction.scale(-canvas_distance));
 
-        for (float x = 0; x < width; x++) {
-            for (float y = 0; y < height; y++) {
-                float UPScale = (height - y)/width;
-                float RIGHTScale = x/width - 1;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                float UPScale = (height - (float) y)/width;
+                float RIGHTScale = (float) x/width - 1;
 
                 Ray ray = new Ray(position, position.sub(canvas_center).add(
                     UP.scale(UPScale),
@@ -86,7 +88,7 @@ public class Camera {
                 ));
 
                 float min_dist = Float.MAX_VALUE;
-                int min_index = optImage.getRGB((int) x, (int) y);
+                short min_index = optImage[(int) x / optdiff][(int) y / optdiff];
 
                 Vec3 OP = spheres.get(min_index).getPos().sub(ray.getOrigin());
                 float dotprod = OP.dot(ray.getDirection());
@@ -98,7 +100,7 @@ public class Camera {
                     }
                 }
 
-                for (int i = 0; i < spheres.size(); i++) {
+                for (short i = 0; i < spheres.size(); i++) {
                     if(i == min_index) continue;
 
                     OP = spheres.get(i).getPos().sub(ray.getOrigin());
@@ -114,7 +116,7 @@ public class Camera {
                         }
                     }
                 }
-                optImage.setRGB((int) x, (int) y, min_index);
+                optImage[(int) x / optdiff][(int) y / optdiff] = min_index;
                 image.setRGB((int) x,(int) y, 
                     (min_index == -1?
                         Color.BLACK:
