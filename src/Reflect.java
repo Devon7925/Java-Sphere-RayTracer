@@ -7,7 +7,7 @@ class Reflect extends RenderComponent {
     }
 
     public Color colorHit(Sphere root, Ray ray, List<Sphere> spheres, int n_reflections, float t) {
-        if (n_reflections <= 0 || t <= 0) return Color.BLACK;
+        if (n_reflections <= 0) return Color.BLACK;
 
         Ray reflect = ray.reflect(root.rhat(ray.point(t)), t);
 
@@ -23,7 +23,7 @@ class Reflect extends RenderComponent {
 
                 if(spheres.get(i).hit(reflect, OP, dotprod)){
                     float dist = spheres.get(i).touch(reflect, OP, dotprod);
-                    if (!Float.isNaN(dist) && dist < min_dist) {
+                    if (dist < min_dist) {
                         min_dist = dist;
                         min_index = i;
                     }

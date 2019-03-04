@@ -8,7 +8,6 @@ class Refract extends RenderComponent {
 
     public Color colorHit(Sphere root, Ray ray, List<Sphere> spheres, int n_reflections, float t1) {
         if (n_reflections <= 0) return Color.BLACK;
-        if (Float.isNaN(t1) || t1 <= 0) return Color.BLACK;
 
         Vec3 t1_point = ray.point(t1);
         Vec3 rhat = root.rhat(t1_point);
@@ -33,7 +32,7 @@ class Refract extends RenderComponent {
 
                 if(spheres.get(i).hit(refract, OP, dotprod)){
                     float dist = spheres.get(i).touch(refract, OP, dotprod);
-                    if (!Float.isNaN(dist) && dist < min_dist) {
+                    if (dist < min_dist) {
                         min_dist = dist;
                         min_index = i;
                     }
