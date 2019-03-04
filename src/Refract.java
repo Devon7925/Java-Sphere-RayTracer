@@ -1,12 +1,12 @@
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.List;
 
 class Refract extends RenderComponent {
     public Refract(float percent){
         super(percent);
     }
 
-    public Color colorHit(Sphere root, Ray ray, ArrayList<Sphere> spheres, int n_reflections, float t1) {
+    public Color colorHit(Sphere root, Ray ray, List<Sphere> spheres, int n_reflections, float t1) {
         if (n_reflections <= 0) return Color.BLACK;
         if (Float.isNaN(t1) || t1 <= 0) return Color.BLACK;
 

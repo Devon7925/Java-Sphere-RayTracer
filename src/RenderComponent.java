@@ -1,5 +1,5 @@
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.List;
 
 abstract class RenderComponent {
     float percent;
@@ -8,5 +8,5 @@ abstract class RenderComponent {
         this.percent = percent;
     }
 
-    public abstract Color colorHit(Sphere root, Ray ray, ArrayList<Sphere> spheres, int n_reflections, float t);
+    public abstract Color colorHit(Sphere root, Ray ray, List<Sphere> spheres, int n_reflections, float t);
 }

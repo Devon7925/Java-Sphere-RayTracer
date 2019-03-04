@@ -1,5 +1,5 @@
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.List;
 
 class ColorReflect extends RenderComponent {
 
@@ -11,7 +11,7 @@ class ColorReflect extends RenderComponent {
     }
 
     @Override
-    public Color colorHit(Sphere root, Ray ray, ArrayList<Sphere> spheres, int n_reflections, float t) {
+    public Color colorHit(Sphere root, Ray ray, List<Sphere> spheres, int n_reflections, float t) {
         return color;
     }
 

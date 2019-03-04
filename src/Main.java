@@ -2,8 +2,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,19 +12,19 @@ public class Main extends JPanel implements KeyListener {
     private static final long serialVersionUID = 1L;
     private JFrame frame;
     private Camera camera;
-    private ArrayList<Sphere> spheres;
+    private List<Sphere> spheres;
 
     private boolean move_front = false;
-    private boolean move_left = false;
-    private boolean move_back = false;
+    private boolean move_left  = false;
+    private boolean move_back  = false;
     private boolean move_right = false;
-    private boolean move_up = false;
-    private boolean move_down = false;
+    private boolean move_up    = false;
+    private boolean move_down  = false;
 
     private boolean look_right = false;
-    private boolean look_left = false;
-    private boolean look_up = false;
-    private boolean look_down = false;
+    private boolean look_left  = false;
+    private boolean look_up    = false;
+    private boolean look_down  = false;
     private boolean look_count = false;
     private boolean look_clock = false;
 
@@ -32,7 +32,7 @@ public class Main extends JPanel implements KeyListener {
     private float rot_velocity = 0.1f;
 
     double accumfps = 0;
-    double numfps = 0;
+    double numchecks = 0;
 
     @Override
     public void keyTyped(KeyEvent keyEvent) {}
@@ -78,7 +78,7 @@ public class Main extends JPanel implements KeyListener {
             case KeyEvent.VK_C:     look_clock = false; break;
             
             case KeyEvent.VK_P: camera.space_default(); break;
-            case KeyEvent.VK_R: accumfps=0;numfps=0;    break;
+            case KeyEvent.VK_R: accumfps=0;numchecks=0;    break;
             case KeyEvent.VK_ESCAPE: System.exit(0);    break;
         }
     }
@@ -94,8 +94,8 @@ public class Main extends JPanel implements KeyListener {
         physics();
 
         accumfps += 1000.0/(System.currentTimeMillis()-time);
-        numfps++;
-        System.out.println("FPS: "+ accumfps/numfps);
+        numchecks++;
+        System.out.println("FPS: "+ accumfps/numchecks);
         time = System.currentTimeMillis();
 
         repaint();
@@ -110,20 +110,20 @@ public class Main extends JPanel implements KeyListener {
 
     private void move() {
         // camera movement
-        if (move_front) camera.move_forward(move_velocity);
+        if (move_front) camera.move_forward( move_velocity);
         if (move_back)  camera.move_forward(-move_velocity);
-        if (move_right) camera.move_right(move_velocity);
-        if (move_left)  camera.move_right(-move_velocity);
-        if (move_up)    camera.move_up(move_velocity);
-        if (move_down)  camera.move_up(-move_velocity);
+        if (move_right) camera.move_right  ( move_velocity);
+        if (move_left)  camera.move_right  (-move_velocity);
+        if (move_up)    camera.move_up     ( move_velocity);
+        if (move_down)  camera.move_up     (-move_velocity);
 
         // camera rotation
-        if (look_right) camera.yaw(rot_velocity);
-        if (look_left)  camera.yaw(-rot_velocity);
-        if (look_down)  camera.pitch(rot_velocity);
+        if (look_right) camera.yaw  ( rot_velocity);
+        if (look_left)  camera.yaw  (-rot_velocity);
+        if (look_down)  camera.pitch( rot_velocity);
         if (look_up)    camera.pitch(-rot_velocity);
-        if (look_count) camera.roll(rot_velocity);
-        if (look_clock) camera.roll(-rot_velocity);
+        if (look_count) camera.roll ( rot_velocity);
+        if (look_clock) camera.roll (-rot_velocity);
     }
 
     private Main(int width, int height) {
@@ -133,30 +133,26 @@ public class Main extends JPanel implements KeyListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
         frame.addKeyListener(this);
-        frame.setSize(width+2, height + 24);
+        frame.setSize(width, height);
         frame.setResizable(false);
         this.addKeyListener(this);
 
         Vec3 camera_pos = new Vec3(-7, -1.5f, 4);
-        Vec3 camera_dir = new Vec3(1f,0f,0f).unit();
-        Vec3 camera_up  = new Vec3(0f,0f,1f);
 
-        Sphere s1 = new Sphere(1f, Color.GREEN, new Vec3(0f, -2.1f,2f));
-        Sphere s2 = new Sphere(1f, Color.BLUE, new Vec3(0f, 2.1f,2f));
-        Sphere s3 = new Sphere(19f, Color.GRAY, new Vec3(0f, 0f, -20f));
+        Sphere s1  = new Sphere(1f,   Color.GREEN,   new Vec3(0f,  -2.1f, 2f));
+        Sphere s2  = new Sphere(1f,   Color.BLUE,    new Vec3(0f,   2.1f, 2f));
+        Sphere s3  = new Sphere(19f,  Color.GRAY,    new Vec3(0f,  0f,  -20f));
         s3.addComponent(new Reflect(0.5f));
-        Sphere ms1 = new Sphere(1f, Color.MAGENTA, new Vec3(0f, 0f, 2f));
+        Sphere ms1 = new Sphere(1f,   Color.MAGENTA, new Vec3(0f,  0f,    2f));
         ms1.addComponent(new Reflect(0.9f));
-        Sphere ms3 = new Sphere(0.8f, Color.CYAN, new Vec3(-2f, 0f, 0f));
+        Sphere ms3 = new Sphere(0.8f, Color.CYAN,    new Vec3(-2f, 0f,    0f));
         ms3.addComponent(new Refract(0.85f));
 
-        spheres = new ArrayList<>(Arrays.asList(s1, s2, s3, ms1, ms3));
+        spheres = Arrays.asList(s1, s2, s3, ms1, ms3);
 
         camera = new Camera(
                 width, height,
-                camera_pos,
-                camera_dir,
-                camera_up
+                camera_pos
         );
 
         camera.pitch(0.5f);
@@ -164,15 +160,10 @@ public class Main extends JPanel implements KeyListener {
         frame.setVisible(true);
     }
 
-
-    public static void image_demo() {
+    public static void main(String[] args) {
         int width = 1000;
         int height =  width * 2 / 3;
         new Main(width, height);
-    }
-
-    public static void main(String[] args) {
-        image_demo();
     }
 
 

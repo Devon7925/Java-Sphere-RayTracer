@@ -1,12 +1,12 @@
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.List;
 
 class Reflect extends RenderComponent {
     public Reflect(float percent){
         super(percent);
     }
 
-    public Color colorHit(Sphere root, Ray ray, ArrayList<Sphere> spheres, int n_reflections, float t) {
+    public Color colorHit(Sphere root, Ray ray, List<Sphere> spheres, int n_reflections, float t) {
         if (n_reflections <= 0 || t <= 0) return Color.BLACK;
 
         Ray reflect = ray.reflect(root.rhat(ray.point(t)), t);

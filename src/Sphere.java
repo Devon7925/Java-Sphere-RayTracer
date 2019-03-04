@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Sphere {
     protected float radius;
@@ -19,7 +20,7 @@ public class Sphere {
         renderComponents.add(new ColorReflect(color));
     }
 
-    public Color colorHit(Ray ray, ArrayList<Sphere> spheres, int n_reflections, float t){
+    public Color colorHit(Ray ray, List<Sphere> spheres, int n_reflections, float t){
         double r = 0, g = 0, b = 0;
         for(RenderComponent comp : renderComponents){
             Color c = comp.colorHit(this, ray, spheres, n_reflections, t);
@@ -55,8 +56,7 @@ public class Sphere {
         // if (ray.getOrigin().sub(pos).mag() <= radius) return true;
         if (dotprod <= 0) return false;
 
-        Vec3 proj = ray.getDirection().scale(dotprod);
-        Vec3 OPproj = proj.sub(OP); // perp
+        Vec3 OPproj = ray.getDirection().scale(dotprod).sub(OP);
 
         return OPproj.mag() <= radius;
     }

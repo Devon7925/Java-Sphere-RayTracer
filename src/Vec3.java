@@ -21,6 +21,10 @@ public class Vec3 {
         return new Vec3(x * scalar, y * scalar, z * scalar);
     }
 
+    public Vec3 div(float scalar) {
+        return new Vec3(x / scalar, y / scalar, z / scalar);
+    }
+
     public Vec3 add(Vec3... vecs) {
         float X = x, Y = y, Z = z;
         for (Vec3 v : vecs) {
@@ -34,7 +38,7 @@ public class Vec3 {
     public Vec3 rotateX(float theta) {
         float sin = (float) Math.sin(theta);
         float cos = (float) Math.cos(theta);
-        float Y = cos * y + -sin*z;
+        float Y = cos * y - sin*z;
         float Z = sin * y + cos*z;
         return new Vec3(x, Y, Z);
     }
@@ -42,18 +46,18 @@ public class Vec3 {
         float sin = (float) Math.sin(theta);
         float cos = (float) Math.cos(theta);
         float X = cos * x + sin * y;
-        float Z = -sin * x + cos * z;
+        float Z = cos * z - sin * x;
         return new Vec3(X, y, Z);
     }
     public Vec3 rotateZ(float theta){
         float sin = (float) Math.sin(theta);
         float cos = (float) Math.cos(theta);
-        float X = cos * x + -sin * y;
+        float X = cos * x - sin * y;
         float Y = sin * x + cos * y;
         return new Vec3(X, Y, z);
     }
 
-    public Vec3 sub(Vec3 ... vecs) {
+    public Vec3 sub(Vec3... vecs) {
         float X = x, Y = y, Z = z;
         for (Vec3 v : vecs) {
             X -= v.x;
@@ -68,16 +72,15 @@ public class Vec3 {
     }
 
     public Vec3 negate() {
-        return new Vec3(-x, -y, -z);
+        return scale(-1);
     }
 
     public float dot(Vec3 vec) {
-        return (x * vec.x) + (y * vec.y) + (z * vec.z);
+        return x*vec.x + y*vec.y + z*vec.z;
     }
 
     public Vec3 unit() {
-        float mag = this.mag();
-        return new Vec3(x / mag, y / mag, z / mag);
+        return div(mag());
     }
 
     public float getX() { return x; }
@@ -87,15 +90,15 @@ public class Vec3 {
     public boolean isZero() { return x == 0 && y == 0 && z == 0; }
 
     public float mag() {
-        return (float) (Math.sqrt(x * x + y * y + z * z));
+        return (float) Math.sqrt(x*x + y*y + z*z);
     }
 
     public Vec3 cross(Vec3 vec) {
-        Vec3 ret = new Vec3();
-        ret.x = (y * vec.z - z * vec.y);
-        ret.y = -(x * vec.z - z * vec.x);
-        ret.z = (x * vec.y - y * vec.x);
-        return ret;
+        return new Vec3(
+            y * vec.z - z * vec.y,
+            z * vec.x - x * vec.z,
+            x * vec.y - y * vec.x
+        );
     }
 
     public String toString() {
